@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"net/http"
 	"fmt"
-	"woocommerce/lib"
+	"github.com/hpcslag/wc-api-golang/woocommerce/lib"
 	"strings"
 	"bytes"
 	"encoding/json"
