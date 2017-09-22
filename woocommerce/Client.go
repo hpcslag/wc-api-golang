@@ -1,66 +1,102 @@
-package main
+package woocommerce
 
 import (
 	"net/url"
 	"net/http"
 	"fmt"
 	"./lib"
+	"strings"
+	"bytes"
+	"encoding/json"
+	"io"
 )
 
 type Client struct{
-	domain string
+	domain *url.URL
 	ck	string
 	cs  string
-	options *Options
-	client *Client
+	client *http.Client
 }
 
-func NewClient(domain, ck,cs string, options interface{}) *Client{
+func NewClient(domainURL, ck,cs string) *Client{
+	
+	domain, err := url.Parse(domainURL)
+	if err != nil{
+		panic(err)
+	}
+
+	domain.Path = "/wp-json/wc/v2/"
+	
 	c := &Client{
 		domain,
 		ck,
 		cs,
-		options,
-		&http.Client,
+		&http.Client{},
 	}
-	return &c
+	return c
 }
 
-func request(path string, params *url.Values) *http.Client{
-	if(url.indexOf("https://") != -1){
-		//make ssl protocol
-	}else{
-		//use oauth single request.
-		util := lib.Utils{}
-		signature, signature_params := util.Oauth_generator("ck","cs", "GET","http://192.168.1.140/wp-json/wc/v2/products")
-		signature_params.Add("oauth_signature", signature)
-
-		specUrl := path + "?" + url.QueryEscape(signature_params.Encode())
-		
-		//req := &http.Client{}
-		//req.Do(specUrl)
-	}
-}
-
-func (c *Client)Get(path string, params *url.Values) *http.Client{
-	if params != nil{
-		request(path, &params)
-	}
-}
-
-func main(){
-
-	b := lib.Utils{}
+func (C *Client)request(method, path string, params *url.Values,data interface{}) io.ReadCloser{
 	
-	s,_ := b.Oauth_generator("x","x", "GET","http://192.168.1.140/wp-json/wc/v2/products")
+	util := lib.Utils{}
+	signature, signature_params := util.Oauth_generator(C.ck, C.cs, strings.ToUpper(method),(C.domain.String() + path))
+	signature_params.Add("oauth_signature", signature)
 
-	fmt.Println(s)
+	//Arrangement of url parameter(specUrl) and Oauth(oauth_generator) parameter will affect result of Signature
+	specUrl := C.domain.String() + path + "?" + "oauth_consumer_key=" + signature_params.Get("oauth_consumer_key") + "&oauth_nonce=" + signature_params.Get("oauth_nonce") + "&oauth_signature=" + url.QueryEscape(signature) + "&oauth_signature_method=" + signature_params.Get("oauth_signature_method") + "&oauth_timestamp=" + signature_params.Get("oauth_timestamp")
+	
+	fmt.Println(specUrl)
 
 
+	body := new(bytes.Buffer)
+	encoder := json.NewEncoder(body)
+	if err := encoder.Encode(data); err != nil {
+		return nil
+	}
 
-	//simulation:
-	c:= &NewClient()
-
-	c.Get()
+	req, _ := http.NewRequest(strings.ToUpper(method), specUrl, body)
+	req.Header.Set("Content-Type", "application/json")
+	
+	res, err := C.client.Do(req)
+	if err != nil{
+		return nil
+	}
+	
+	return res.Body
 }
 
+func (c *Client)Get(path string, params *url.Values) io.ReadCloser{
+	if params != nil{
+		return c.request("GET", path, params,nil)
+	}
+	return c.request("GET", path, nil,nil)
+}
+
+func (c *Client)Post(path string, data interface{}) io.ReadCloser{
+	return c.request("POST", path, nil, data)
+}
+
+func (c *Client)Put(path string, data interface{}) io.ReadCloser{
+	return c.request("POST", path, nil, data)
+}
+
+func (c *Client)Delete(path string, params *url.Values) io.ReadCloser{
+	if params != nil{
+		return c.request("DELETE", path, params,nil)
+	}
+	return c.request("DELETE", path, nil,nil)
+}
+
+func (c *Client)Patch(path string, params *url.Values) io.ReadCloser{
+	if params != nil{
+		return c.request("PATCH", path, params,nil)
+	}
+	return c.request("PATCH", path, nil,nil)
+}
+
+func (c *Client)Option(path string, params *url.Values) io.ReadCloser{
+	if params != nil{
+		return c.request("OPTIONS", path, params,nil)
+	}
+	return c.request("OPTIONS", path, nil,nil)
+}

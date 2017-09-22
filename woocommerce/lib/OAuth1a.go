@@ -15,7 +15,7 @@ import (
 
 func oauth_generator(_KEY, _SECRET, HttpMethod, RequestUrl string) (string, *url.Values){
 	HASH:= "HMAC-SHA256"
-
+	
 	SignatureParameters := url.Values{}
 	SignatureParameters.Add("oauth_consumer_key", _KEY)
 	SignatureParameters.Add("oauth_nonce", getSha1Nonce())
