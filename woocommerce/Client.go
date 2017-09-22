@@ -44,9 +44,6 @@ func (C *Client)request(method, path string, params *url.Values,data interface{}
 
 	//Arrangement of url parameter(specUrl) and Oauth(oauth_generator) parameter will affect result of Signature
 	specUrl := C.domain.String() + path + "?" + "oauth_consumer_key=" + signature_params.Get("oauth_consumer_key") + "&oauth_nonce=" + signature_params.Get("oauth_nonce") + "&oauth_signature=" + url.QueryEscape(signature) + "&oauth_signature_method=" + signature_params.Get("oauth_signature_method") + "&oauth_timestamp=" + signature_params.Get("oauth_timestamp")
-	
-	fmt.Println(specUrl)
-
 
 	body := new(bytes.Buffer)
 	encoder := json.NewEncoder(body)
