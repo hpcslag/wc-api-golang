@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"net/http"
 	"fmt"
-	"./lib"
+	"woocommerce/lib"
 	"strings"
 	"bytes"
 	"encoding/json"
