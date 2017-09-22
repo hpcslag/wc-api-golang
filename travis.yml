@@ -1,0 +1,8 @@
+language: go
+go:
+ - 1.8.x
+
+install:
+  - git pull github.com/hpcslag/wc-api-golang
+
+script: cd ./woocommerce && go test
