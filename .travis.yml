@@ -5,4 +5,4 @@ go:
 install:
   - git pull http://github.com/hpcslag/wc-api-golang.git
 
-script: cd ./woocommerce && go test
+script: go test ./wc-api-gonag/woocommerce/run_test.go
