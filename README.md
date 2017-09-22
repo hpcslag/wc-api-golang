@@ -25,13 +25,13 @@ Setup for the new WP REST API integration (WooCommerce 2.6 or later):
 
 ```golang
 import (
-  wc "github.com/hpcslag/wc-api-golang/woocommerce"
+	wc "github.com/hpcslag/wc-api-golang/woocommerce"
 )
 
 client := wc.NewClient(
-    "http://path_to_wordpress.com", 
-    "ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", 
-    "cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+		"http://path_to_wordpress.com",
+		"ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+		"cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
 )
 ```
 
@@ -39,7 +39,7 @@ client := wc.NewClient(
 
 |       Option      |   Type   | Required |                Description                 |
 | ----------------- | -------- | -------- | ------------------------------------------ |
-| `domain`             | `string` | yes      | Your Store URL, example: http://woo.dev/   |
+| `domain`          | `string` | yes      | Your Store URL, example: http://woo.dev/   |
 | `consumer_key`    | `string` | yes      | Your API consumer key                      |
 | `consumer_secret` | `string` | yes      | Your API consumer secret                   |
 
@@ -55,46 +55,46 @@ client := wc.NewClient(
 ### GET
 
 ```golang
-responseString := client.Get( path , param)
+responseString := client.Get(path, param)
 
 //example:
-responseString := client.Get("products",nil)
+responseString := client.Get("products", nil)
 ```
 
 ### POST
 
 ```golang
-responseString := client.Post( path , data)
+responseString := client.Post(path, data)
 
 //example:
 var data map[string]interface{} = map[string]interface{}{
-    "code":"10off",
-    "discount_type": "percent",
-    "amount": "10",
-    "individual_use": true,
-    "exclude_sale_items": true,
-    "minimum_amount": "100.00",
+	"code":               "10off",
+	"discount_type":      "percent",
+	"amount":             "10",
+	"individual_use":     true,
+	"exclude_sale_items": true,
+	"minimum_amount":     "100.00",
 }
 
-responseString := client.Post("coupons",data)
+responseString := client.Post("coupons", data)
 ```
 
 ### PUT
 
 ```golang
-responseString := client.Put( path , data)
+responseString := client.Put(path, data)
 ```
 
 ### DELETE
 
 ```golang
-responseString := client.Delete( path , param)
+responseString := client.Delete(path, param)
 ```
 
 ### OPTIONS
 
 ```golang
-responseString := client.Options( path , param)
+responseString := client.Options(path, param)
 ```
 
 #### Response
@@ -102,9 +102,9 @@ responseString := client.Options( path , param)
 Methods will response `io.ReadCloser` type.
 
 You can read by buffer decode:
-```golang
 
-body := client.Get("products",nil)
+```golang
+body := client.Get("products", nil)
 
 buf := new(bytes.Buffer)
 buf.ReadFrom(body)
@@ -116,6 +116,7 @@ defer body.Close()
 ```
 
 also can use `map` type to receive json(unmarshal):
+
 ```golang
 jsonDecoder := json.NewDecoder(body)
 
@@ -125,7 +126,7 @@ var data map[string]interface{}
 //var data []map[string]interface{}
 
 if err := jsonDecoder.Decode(&data); err != nil && err != io.EOF {
-    t.Fatal(err)
+	t.Fatal(err)
 }
 
 fmt.Println(body)
