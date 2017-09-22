@@ -3,6 +3,6 @@ go:
  - 1.8.x
 
 install:
-  - git pull github.com/hpcslag/wc-api-golang
+  - git pull http://github.com/hpcslag/wc-api-golang.git
 
 script: cd ./woocommerce && go test
