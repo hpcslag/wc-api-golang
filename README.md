@@ -1,6 +1,8 @@
 # WooCommerce API - Golang Client
 A Golang wrapper for the WooCommerce REST API
 
+[![build status](https://travis-ci.org/hpcslag/wc-api-golang.svg)](https://travis-ci.org/hpcslag/wc-api-golang)
+
 # Descrption
 Only support `http` protocol (not `https`), and API Version is `v2`, follow OAuth 1.0a rules and condition to make request to `WooCommerce`.
 
